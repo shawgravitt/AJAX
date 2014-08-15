@@ -18,14 +18,13 @@ var MyTwitterApi = (function(options) {
 				console.log("success");
 
 				var obj = (JSON && JSON.parse(data)) || $.parseJSON(data);
-				obj.length = 10;
 				console.log(obj);
 
-					var $container = $('.results1');
-					$container.empty();
+					var container = $('.results1');
+					container.empty();
 					for (var i = 0; i < obj.length; i++) {
-						var $li = $('<li>' + obj[i].text + '</li>');
-						$container.append($li);
+						var newTweet = '<li>' + obj[i].text + '</li>';
+						container.append(newTweet);
 					}
 			}
 
@@ -102,7 +101,6 @@ var MyTwitterApi = (function(options) {
 		);
 	});
 
-//git save
 
 	
 
