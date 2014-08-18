@@ -10,7 +10,7 @@ var MyTwitterApi = (function(options) {
 
 	var updateUI = function( data, location, query) {
 		var obj = (JSON && JSON.parse(data)) || $.parseJSON(data);
-
+		console.log(obj);
 		var loopThroughThis;
 
 		if (obj.hasOwnProperty('statuses')) {
@@ -23,14 +23,31 @@ var MyTwitterApi = (function(options) {
 		container.empty();
 		for (var i = 0; i < loopThroughThis.length; i++) {
 			var newTweet = '<li>' + loopThroughThis[i].text + '</li>';
-
+			
 			if(query) {
 				var highlightText = new RegExp('('+ query + ')', 'i');
 				newTweet = newTweet.replace(highlightText, '<span class="highlight">$1</span>');
 			}
+			newTweet = convertToLinks(newTweet);
+
 			container.append(newTweet);
 		}
 	};
+
+	//need to work on this some more, there are a lot more links in tweet that what this will work on.
+	//hashtags and users, tweet entities need to be factored in somehow.
+	function convertToLinks(text) {
+		var replaceText, replacePattern1;
+
+		replacePattern1 = /(\b(https?):\/\/[-A-Z0-9+&amp;@#\/%?=~_|!:,.;]*[-A-Z0-9+&amp;@#\/%=~_|])/ig;
+		replacedText = text.replace(replacePattern1, '<a title="$1" href="$1" target="_blank">$1</a>');
+		 
+		return replacedText;
+	}
+
+
+
+
 
 	$('form[name="timeline"]').submit(function() {
 
@@ -38,12 +55,13 @@ var MyTwitterApi = (function(options) {
 			'twitter-proxy.php',
 			{
 				'op': 'user_timeline',
-				'screen_name': $("input[name='screen_name']").val()
+				'screen_name': $("input[name='screen_name']").val(),
+				'count': 10,
+				'include_rts': false
 			},
 			function(data) {
 				updateUI(data, select_timeline);
 			}
-			
 		);
 		return false;
 	});
@@ -55,14 +73,14 @@ var MyTwitterApi = (function(options) {
 			'twitter-proxy.php',
 			{
 				'op': 'search',
-				'q': $("input[name='q1']").val()
+				'q': $("input[name='q1']").val(),
+				'count': 10,
+				'lang': 'en'
 			},
 			function(data) {
 				var query = $("input[name='q1']").val();
 				updateUI(data, select_search1, query);
-
-			}
-			
+			}	
 		);
 		return false;
 	});
@@ -77,13 +95,13 @@ var MyTwitterApi = (function(options) {
 				'op': 'search',
 				'q': $("input[name='q2']").val(),
 				"result_type": $("select[name='result_type']").find(':selected').text(),
-				'count': $("input[name='count']").val()
+				'count': $("input[name='count']").val(),
+				'lang': 'en'
 			},
 			function(data) {
 				var query = $("input[name='q2']").val();
 				updateUI(data, select_search2, query);
 			}
-
 		);
 		return false;
 	});
