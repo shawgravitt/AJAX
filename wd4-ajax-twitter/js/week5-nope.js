@@ -24,10 +24,13 @@ var MyTwitterApi = (function(options) {
 		for (var i = 0; i < loopThroughThis.length; i++) {
 			var newTweet = '<li>' + loopThroughThis[i].text + '</li>';
 			
+			//highlights the search word with blue
 			if(query) {
 				var highlightText = new RegExp('('+ query + ')', 'i');
 				newTweet = newTweet.replace(highlightText, '<span class="highlight">$1</span>');
 			}
+
+			//makes links click-able 
 			newTweet = convertToLinks(newTweet);
 
 			container.append(newTweet);
@@ -37,20 +40,38 @@ var MyTwitterApi = (function(options) {
 	//need to work on this some more, there are a lot more links in tweet that what this will work on.
 	//hashtags and users, tweet entities need to be factored in somehow.
 	function convertToLinks(text) {
-		var replaceText, replacePattern1;
+		var replaceText, replacePattern;
 
-		replacePattern1 = /(\b(https?):\/\/[-A-Z0-9+&amp;@#\/%?=~_|!:,.;]*[-A-Z0-9+&amp;@#\/%=~_|])/ig;
-		replacedText = text.replace(replacePattern1, '<a title="$1" href="$1" target="_blank">$1</a>');
+		replacePattern = /(\b(https?):\/\/[-A-Z0-9+&amp;@#\/%?=~_|!:,.;]*[-A-Z0-9+&amp;@#\/%=~_|])/ig;
+		replacedText = text.replace(replacePattern, '<a href="$1" target="_blank">$1</a>');
 		 
 		return replacedText;
 	}
 
 
+	// I think this was an attempt to decouple my code, not really sure if it is even close.
+
+	// $('.results').on('data-received', function(data) {
+
+	// 	if ( {'q': $("input[name='q1']").val()} ) {
+
+	// 		var query = $("input[name='q1']").val();
+	// 		updateUI(data, select_search1, query);
+
+	// 	} else if( {'q': $("input[name='q2']").val()} ){
+
+	// 		var query = $("input[name='q2']").val();
+	// 		updateUI(data, select_search2, query);
+
+	// 	} else {
+	// 		updateUI( select_timeline);
+	// 	}
+	// });
 
 
 
-	$('form[name="timeline"]').submit(function() {
-
+	$('form[name="timeline"]').submit(function(e) {
+			// e.preventDefault();
 		$.get(
 			'twitter-proxy.php',
 			{
@@ -59,9 +80,12 @@ var MyTwitterApi = (function(options) {
 				'count': 10,
 				'include_rts': false
 			},
-			function(data) {
+			function(data){
+				// console.log(data);
 				updateUI(data, select_timeline);
+				// $('.results').trigger('data-received', data);
 			}
+			
 		);
 		return false;
 	});
@@ -80,7 +104,8 @@ var MyTwitterApi = (function(options) {
 			function(data) {
 				var query = $("input[name='q1']").val();
 				updateUI(data, select_search1, query);
-			}	
+				// $('.results').trigger('data-received', [data]);
+			}
 		);
 		return false;
 	});
@@ -101,6 +126,7 @@ var MyTwitterApi = (function(options) {
 			function(data) {
 				var query = $("input[name='q2']").val();
 				updateUI(data, select_search2, query);
+				// $('.results').trigger('data-received', [data]);
 			}
 		);
 		return false;
