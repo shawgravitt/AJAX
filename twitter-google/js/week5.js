@@ -7,7 +7,7 @@ var MyTwitterApi = (function(options) {
 		API_BASE = window.location.href.replace(/\/[^\/]+.html\??(.*)/, '/');
 
 	function createListeners() {
-		setupTimeline();
+		// setupTimeline();
 		setupSearch();
 		setupUIHandler();
 		setUpMap();
@@ -21,31 +21,31 @@ var MyTwitterApi = (function(options) {
 		});
 	}
 
-	function setupTimeline() {
+	// function setupTimeline() {
 
-		$('form[name=timeline] button').click(function(event) {
-			var thisEvent = $(event.currentTarget),
-				form = thisEvent.closest('form'),
-				args = {},
-				screen_name = form.find('input[type=text]').val(),
-				results = form.find('.results ul');
+	// 	$('form[name=timeline] button').click(function(event) {
+	// 		var thisEvent = $(event.currentTarget),
+	// 			form = thisEvent.closest('form'),
+	// 			args = {},
+	// 			screen_name = form.find('input[type=text]').val(),
+	// 			results = form.find('.results ul');
 
-			args['op'] = 'user_Timeline';
-			args['screen_name'] = screen_name;	
-			args['lang'] = 'en';
+	// 		args['op'] = 'user_Timeline';
+	// 		args['screen_name'] = screen_name;	
+	// 		args['lang'] = 'en';
 
-				$.getJSON(API_BASE + 'twitter-proxy.php', args,
-				function(response) {
-					var eventArgs = {
-						resultElement: results,
-						data: response
-					};
-					$('body').trigger('data-received', eventArgs);
-				});
+	// 			$.getJSON(API_BASE + 'twitter-proxy.php', args,
+	// 			function(response) {
+	// 				var eventArgs = {
+	// 					resultElement: results,
+	// 					data: response
+	// 				};
+	// 				$('body').trigger('data-received', eventArgs);
+	// 			});
 
-			return false;
-		});
-	}
+	// 		return false;
+	// 	});
+	// }
 
 	function setupSearch() {
 
@@ -104,7 +104,6 @@ var MyTwitterApi = (function(options) {
 
 			findCoordinates(status, txt);
 
-
 			li.appendChild(txtNode);
 			$resultElement.append(li);
 		}
@@ -121,16 +120,38 @@ var MyTwitterApi = (function(options) {
 
 
 	var map;
-
+	var mapOptions = {};
+	var marker;
 	function setUpMap() {
 		
 		var circus = new google.maps.LatLng(33.813245,-84.362171);
-		var mapOptions = {
-			zoom: 10,
-			center: circus
-			// mapTypeId: google.maps.MapTypeId.HYBRID
+		mapOptions = {
+			zoom: 15,
+			mapTypeId: google.maps.MapTypeId.HYBRID
         };
-       var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+       map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+       map.setCenter(circus);
+
+       marker = new google.maps.Marker({
+			position: circus,
+			map: map,
+			animation: google.maps.Animation.DROP
+        });
+
+       markerMaker("The circus!")
+
+	}
+
+	function markerMaker(string) {
+		var overlayContent = string;
+
+        var infowindow = new google.maps.InfoWindow({
+          content: overlayContent
+        });
+
+        google.maps.event.addListener(marker, 'click', function() {
+			infowindow.open(map,this);
+        });
 	}
 
 	
@@ -139,7 +160,6 @@ var MyTwitterApi = (function(options) {
 		var lat;
 		var lng;
 		
-		
 			if (status.coordinates != null) {
 				lat = status.coordinates.coordinates[1];
 				lng = status.coordinates.coordinates[0];
@@ -147,34 +167,25 @@ var MyTwitterApi = (function(options) {
 				console.log(lng);
 
 			}else {
-				console.log('no coordinates')
-				// return false;
+				console.log('no coordinates');
+				return false;
 			}
 
-
 		var tweetLocation = new google.maps.LatLng(lat, lng);
-		var mapOptions = {
-			center: tweetLocation,
-			// zoom: 10,
-			// mapTypeId: google.maps.MapTypeId.HYBRID
-        };
-        
 
-        var overlayContent = txt;
+		mapOptions = {
+			zoom: 15,
+			mapTypeId: google.maps.MapTypeId.HYBRID
+		};
+        map.setCenter(tweetLocation);
 
-        var infowindow = new google.maps.InfoWindow({
-          content: overlayContent
-        });
-	
-        var marker = new google.maps.Marker({
+		marker = new google.maps.Marker({
 			position: tweetLocation,
 			map: map,
-			draggable:true,
 			animation: google.maps.Animation.DROP
-        });
-        google.maps.event.addListener(marker, 'click', function() {
-			infowindow.open(map,marker);
-        });
+		});
+
+		markerMaker(txt);
 
 	}
 

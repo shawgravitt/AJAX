@@ -10,23 +10,19 @@
 </head>
 <body>
 
-	<div>
-		<form name="timeline">
-			Twitter handle: <input name="screen_name" type="text"/>
-			<button type="submit">Get Timeline</button>
-			<div class="results">
-				<ul>
-				</ul>
-			</div>
-		</form>
-	</div>
-
-	<hr/>
+	
 
 	<div>
 		<form name="search">
 			Query: <input name="q" type="text" />
 			<button type="submit">Quick Search</button>
+			
+			<hr/>
+
+			<div id="map-canvas"></div>
+
+			<hr/>
+
 			<div class="results">
 				<ul>
 				</ul>
@@ -34,29 +30,9 @@
 		</form>
 	</div>
 
-	<hr/>
+	
 
-	<div>
-		<form name="search">
-			Query: <input name="q" type="text" />
-			Limit: <input name="count" type="number" />
-			Result Type:
-			<select name="result_type">
-				<option value="mixed">Default</option>
-				<option value="popular">Most popular</option>
-				<option value="recent">Most recent</option>
-			</select>
-			<button type="submit">Custom Search</button>
-			<div class="results">
-				<ul>
-				</ul>
-			</div>
-		</form>
-	</div>
-
-	<hr/>
-
-	<div id="map-canvas"></div>
+	
 
 
 
