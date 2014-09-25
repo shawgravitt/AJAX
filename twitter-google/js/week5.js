@@ -62,7 +62,7 @@ var MyTwitterApi = (function(options) {
 
 			var countInput = form.find('input[name=count]');
 			if (countInput) {
-				args['count'] = countInput.val();
+				args['count'] = 100;
 			}
 			var resultTypeInput = form.find('select[name=result_type]');
 			if (resultTypeInput) {
@@ -107,6 +107,8 @@ var MyTwitterApi = (function(options) {
 			li.appendChild(txtNode);
 			$resultElement.append(li);
 		}
+
+		zoomMapToArrayOfCoords();
 	};
 
 	function convertToLinks(text) {
@@ -155,29 +157,46 @@ var MyTwitterApi = (function(options) {
 	}
 
 	
+	var LatLngList = Array();
+
  	//plot map
 	function findCoordinates(status, txt) {
 		var lat;
 		var lng;
 		
-			if (status.coordinates != null) {
-				lat = status.coordinates.coordinates[1];
-				lng = status.coordinates.coordinates[0];
-				console.log(lat);
-				console.log(lng);
+		if (status.coordinates != null) {
+			lat = status.coordinates.coordinates[1];
+			lng = status.coordinates.coordinates[0];
+			console.log(lat);
+			console.log(lng);
 
-			}else {
-				console.log('no coordinates');
-				return false;
-			}
+		}else {
+			console.log('no coordinates');
+			return false;
+		}
 
 		var tweetLocation = new google.maps.LatLng(lat, lng);
 
+		LatLngList.push(tweetLocation);
+
+		// var tweetLocationArray = new Array([tweetLocation]);
+
+		// var latlngbounds = new google.maps.LatLngBounds();
+
+		// tweetLocationArray.each(function(n){
+		// 	latlngbounds.extend(n);
+		// });
+		// map.setCenter(latlngbounds.getCenter());
+		// map.fitBounds(latlngbounds);
+
+
+
+		//original work
 		mapOptions = {
 			zoom: 15,
 			mapTypeId: google.maps.MapTypeId.HYBRID
 		};
-        map.setCenter(tweetLocation);
+        // map.setCenter(tweetLocation);
 
 		marker = new google.maps.Marker({
 			position: tweetLocation,
@@ -189,6 +208,21 @@ var MyTwitterApi = (function(options) {
 
 	}
 
+
+
+	function zoomMapToArrayOfCoords() {
+		//  Make an array of the LatLng's of the markers you want to show
+		//var LatLngList = new Array (tweetLocation);
+		//  Create a new viewpoint bound
+		var bounds = new google.maps.LatLngBounds();
+		//  Go through each...
+		for (var i = 0, LtLgLen = LatLngList.length; i < LtLgLen; i++) {
+			//  And increase the bounds to take this point
+			bounds.extend (LatLngList[i]);
+		}
+		//  Fit these bounds to the map
+		map.fitBounds (bounds);
+	}
 
 
 

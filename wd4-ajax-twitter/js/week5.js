@@ -31,7 +31,7 @@ var MyTwitterApi = (function(options) {
 				results = form.find('.results ul');
 
 			args['op'] = 'user_Timeline';
-			args['screen_name'] = screen_name;	
+			args['screen_name'] = screen_name;
 			args['lang'] = 'en';
 
 				$.getJSON(API_BASE + 'twitter-proxy.php', args,

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Jam Map</title>
+
+	<style type="text/css">
+		body{font-family: Candara, Calibri, Segoe, "Segoe UI", Optima, Arial, sans-serif;}
+		.highlight { color: blue;}
+		#map-canvas { height: 500px; width: 80%; margin: 0 auto;}
+		header{text-align: center;}
+		.artist{text-transform: uppercase;}
+		#global_indicator{display:none; position: absolute; left:50%; margin-left: -16px; }
+		#map_canvas {background: transparent; }
+		#map_indicator {text-align: center; margin-top: 50px; transform:scale(1.2);}
+		.results {width: 80%; margin: 0 auto;}
+	</style>
+</head>
+<body>
+	
+	<div id="global_indicator">
+		<img  src="ajax-loader.gif" alt="">
+	</div>
+	
+
+	
+	<div>
+		<form name="search">
+			Search Artist Name Here: <input name="q" type="text" />
+			<button type="submit">Search for Shows</button>
+
+		</form>
+
+
+		<header>
+			<h1>Jam Map</h1>
+			<h2 class="artist"></h2>
+		</header>
+			<hr/>
+			
+			<div id="map-canvas">
+				<div id="map_indicator">
+					<img  src="ajax-loader.gif" alt="">
+				</div>
+			</div>
+
+			<hr/>
+
+			<div class="results">
+				<ul>
+				</ul>
+			</div>
+		
+	</div>
+
+	
+
+	
+
+
+
+	
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDU3Q2i2-1QXoybl0QmIDF14xkSSDa9WVQ"></script>
+<script>
+	$( document ).ajaxStart(function() {
+		$( "#global_indicator" ).show();
+	});
+	$(document).ajaxStop(function() {
+		$( "#global_indicator" ).hide();
+	});
+</script>
+
+<script type="text/javascript" src="js/jamMap.js"></script>
+</body>
+</html>
